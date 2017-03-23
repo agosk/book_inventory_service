@@ -1,48 +1,58 @@
 var express = require('express');
-var bodyParser = require('body-parser');
-
-
 var app = express();
+var bodyParser = require('body-parser');
+var stockRepository = require('./StockRepository');
 
-function logRequests(req, res, next) {
-    console.log('incoming request at', new Date());
+
+function logRequest(req, res, next) {
+    console.log('incoming request at ', new Date());
     next();
 }
+
 
 function auth(req, res, next) {
     console.log('you can pass my auth');
     next();
 }
 
-// app.use(logRequests);
-// app.use(auth);
 
+// middleware - cross cutting concerns
+app.use(logRequest);
+app.use(auth);
 app.use(bodyParser.json());
 
-
+// handler/routes
 app.get('/', function (req, res) {
-    res.send('Hello Express!');
+    res.send('Hello World!');
+});
+
+app.post('/stock', function (req, res, next) {
+
+    stockRepository.stockUp(req.body.isbn, req.body.count)
+        .then(function () {
+            res.json({
+                isbn: req.body.isbn,
+                count: req.body.count
+            });
+        });
+
+});
+
+app.get('/stock', function (req, res, next) {
+    stockRepository.findAll()
+        .then(function (results) {
+            res.json(results);
+        }).catch(next);
 });
 
 app.get('/error', function (req, res) {
     throw new Error('forced error');
 });
 
-app.post('/stock', function (req, res, next) {
-    res.json({
-        isbn: req.body.isbn,
-        count: req.body.count
-    })
-});
 
+// error handling
 app.use(clientError);
 app.use(serverError);
-
-
-app.listen(3000, function () {
-    console.log('Example app listening on port 3000!');
-});
-
 
 function clientError(req, res, next) {
     var err = new Error('Not Found');
@@ -56,3 +66,5 @@ function serverError(err, req, res, next) {
     console.error(err.stack);
     res.send('Oh no: ' + status);
 }
+
+module.exports = app;
