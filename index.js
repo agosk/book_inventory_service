@@ -1,10 +1,58 @@
-var http = require('http');
+var express = require('express');
+var bodyParser = require('body-parser');
 
-var server = http.createServer(function (req, res) {
-    res.end('hello world');
+
+var app = express();
+
+function logRequests(req, res, next) {
+    console.log('incoming request at', new Date());
+    next();
+}
+
+function auth(req, res, next) {
+    console.log('you can pass my auth');
+    next();
+}
+
+// app.use(logRequests);
+// app.use(auth);
+
+app.use(bodyParser.json());
+
+
+app.get('/', function (req, res) {
+    res.send('Hello Express!');
 });
 
-server.listen(3000, function () {
-    console.log("When this callback is invoked our server is listening on port: " + 3000);
+app.get('/error', function (req, res) {
+    throw new Error('forced error');
 });
 
+app.post('/stock', function (req, res, next) {
+    res.json({
+        isbn: req.body.isbn,
+        count: req.body.count
+    })
+});
+
+app.use(clientError);
+app.use(serverError);
+
+
+app.listen(3000, function () {
+    console.log('Example app listening on port 3000!');
+});
+
+
+function clientError(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+}
+
+function serverError(err, req, res, next) {
+    var status = err.status || 500;
+    res.status(status);
+    console.error(err.stack);
+    res.send('Oh no: ' + status);
+}
