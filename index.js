@@ -45,6 +45,19 @@ app.get('/stock', function (req, res, next) {
         }).catch(next);
 });
 
+app.get('/stock/:isbn', function (req, res, next) {
+    stockRepository.findOne(req.params.isbn)
+        .then(function (results) {
+            if (results != null) {
+                res.json(results);
+            } else {
+                var err = new Error('Not Found');
+                err.status = 404;
+                next(err);
+            }
+        }).catch(next);
+});
+
 app.get('/error', function (req, res) {
     throw new Error('forced error');
 });

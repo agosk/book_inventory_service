@@ -31,9 +31,16 @@ function findAll() {
 
 }
 
+function findOne (isbn) {
+    return collectionPromise.then(function (collection) {
+        return collection.find({isbn:isbn}).limit(1).next();
+    })
+}
+
 
 module.exports = {
     stockUp: stockUp,
-    findAll: findAll
+    findAll: findAll,
+    findOne:findOne
 };
 
