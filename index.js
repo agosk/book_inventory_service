@@ -51,9 +51,10 @@ app.get('/stock/:isbn', function (req, res, next) {
             if (results != null) {
                 res.json(results);
             } else {
-                var err = new Error('Not Found');
+                var err = new Error('Book not Found');
                 err.status = 404;
-                next(err);
+                res.status(err.status);
+                res.send(err);
             }
         }).catch(next);
 });
