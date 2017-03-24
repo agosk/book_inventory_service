@@ -26,7 +26,21 @@ module.exports = function (stockRepository) {
             stockRepository.findOne(req.params.isbn)
                 .then(function (results) {
                     if (results != null) {
-                        res.json(results);
+                        res.format({
+
+                            'text/html': function () {
+                                res.send('<p>' + results.count + ' copy left</p>');
+                            },
+
+                            'application/json': function () {
+                                res.json(results);
+                            },
+
+                            'default': function () {
+                                // log the request and respond with 406
+                                res.status(406).send('Not Acceptable');
+                            }
+                        });
                     } else {
                         var err = new Error('Book not Found');
                         err.status = 404;
