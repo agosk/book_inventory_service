@@ -2,7 +2,11 @@
  * Created by skaczmarek on 23.03.2017.
  */
 const request = require('supertest');
-const app = require('./../index');
+const inmemoryrepository = require('./in-memory-mongo')();
+const app = require('./../src/index')(inmemoryrepository);
+
+
+
 
 describe('Book inventory', function () {
     it('allows to stock up the items', function (done) {

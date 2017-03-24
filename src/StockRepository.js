@@ -2,7 +2,6 @@
  * Created by skaczmarek on 23.03.2017.
  */
 var MongoClient = require('mongodb').MongoClient;
-var stockRepository = require('./StockRepository');
 
 var url = 'mongodb://localhost:27017/booksdb';
 
@@ -31,9 +30,9 @@ function findAll() {
 
 }
 
-function findOne (isbn) {
+function getCount(isbn) {
     return collectionPromise.then(function (collection) {
-        return collection.find({isbn:isbn}).limit(1).next();
+        return collection.find({isbn: isbn}).limit(1).next();
     })
 }
 
@@ -41,6 +40,6 @@ function findOne (isbn) {
 module.exports = {
     stockUp: stockUp,
     findAll: findAll,
-    findOne:findOne
+    findOne: getCount
 };
 
