@@ -8,7 +8,6 @@ module.exports = function (stockRepository) {
 
     var app = express();
 
-
     app.use(bodyParser.json());
 
     app.get('/', routes.hello);
@@ -16,9 +15,9 @@ module.exports = function (stockRepository) {
     app.get('/stock', routes.findAll);
     app.get('/stock/:isbn', routes.getCount);
 
-    app.get('/error', function (req, res) {
-        throw new Error('forced error');
-    });
+    // app.get('/error', function (req, res) {
+    //     throw new Error('forced error');
+    // });
 
 
     app.use(error.clientError);
