@@ -1,12 +1,16 @@
-var express = require('express');
-var bodyParser = require('body-parser');
+const express = require('express');
+const bodyParser = require('body-parser');
 
-module.exports = function (stockRepository) {
 
-    var error = require('./error');
-    var routes = require('./routes')(stockRepository);
+module.exports = function ({stockRepository, auth}) {
 
-    var app = express();
+    const error = require('./error');
+    const routes = require('./routes')(stockRepository);
+
+
+    const app = express();
+
+    app.use(auth);
 
     app.use(bodyParser.json());
 

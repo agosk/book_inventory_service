@@ -3,7 +3,7 @@ module.exports = function (stockRepository) {
 
     return {
         hello: function (req, res) {
-            res.send('Hello World!');
+            res.send('-> Pong;');
         },
         stockUp: function (req, res, next) {
 
